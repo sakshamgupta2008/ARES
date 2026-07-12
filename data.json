@@ -1,0 +1,131 @@
+{
+  "users": [
+    {
+      "id": 1783831796943,
+      "fullName": "ETISHA SINGH",
+      "email": "etishasingh9454@gmail.com",
+      "password": "vvhhvjh",
+      "department": "Sales",
+      "role": "Employee",
+      "xp": 0
+    },
+    {
+      "id": 1783834230593,
+      "fullName": "ETISHA SINGH",
+      "email": "gvvjvvjvhvhv@gmail.com",
+      "password": "ghvhgvjkh",
+      "department": "Sales",
+      "role": "Employee",
+      "xp": 0
+    }
+  ],
+  "goals": [
+    {
+      "id": 1,
+      "title": "Reduce Fleet Emissions",
+      "department": "Logistics",
+      "progress": 70,
+      "deadline": "2026-12-31",
+      "status": "Active"
+    },
+    {
+      "id": 2,
+      "title": "Cut Packaging Waste",
+      "department": "Manufacturing",
+      "progress": 82,
+      "deadline": "2026-09-30",
+      "status": "On Track"
+    },
+    {
+      "id": 3,
+      "title": "Office Energy Cut",
+      "department": "Corporate",
+      "progress": 100,
+      "deadline": "2026-06-30",
+      "status": "Completed"
+    }
+  ],
+  "activities": [
+    {
+      "id": 1,
+      "title": "Tree Plantation",
+      "joined": 24,
+      "evidence": true
+    },
+    {
+      "id": 2,
+      "title": "Blood Donation",
+      "joined": 18,
+      "evidence": true
+    },
+    {
+      "id": 3,
+      "title": "Beach Cleanup",
+      "joined": 31,
+      "evidence": false
+    },
+    {
+      "id": 4,
+      "title": "ESG Workshop",
+      "joined": 52,
+      "evidence": false
+    }
+  ],
+  "audits": [
+    {
+      "id": 1,
+      "title": "Q2 Waste Audit",
+      "department": "Manufacturing",
+      "auditor": "S. Nair",
+      "findings": "3 minor issues",
+      "status": "Completed"
+    },
+    {
+      "id": 2,
+      "title": "Vendor Compliance Check",
+      "department": "Procurement",
+      "auditor": "R. Iyer",
+      "findings": "1 open issue",
+      "status": "Under Review"
+    }
+  ],
+  "issues": [
+    {
+      "id": 1,
+      "title": "Missing MSDS sheets",
+      "severity": "High",
+      "owner": "S. Nair",
+      "dueDate": "2026-07-18"
+    },
+    {
+      "id": 2,
+      "title": "Late vendor disclosure",
+      "severity": "Medium",
+      "owner": "R. Iyer",
+      "dueDate": "2026-07-10"
+    }
+  ],
+  "challenges": [
+    {
+      "id": 1,
+      "title": "Sustainability Sprint",
+      "xp": 200,
+      "difficulty": "Hard",
+      "deadline": "2026-07-20"
+    },
+    {
+      "id": 2,
+      "title": "Recycle Challenge",
+      "xp": 80,
+      "difficulty": "Easy",
+      "deadline": "2026-07-15"
+    },
+    {
+      "id": 3,
+      "title": "Commute Green Week",
+      "xp": 120,
+      "difficulty": "Medium",
+      "deadline": "2026-07-25"
+    }
+  ]
+}

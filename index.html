@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EcoSphere ESG Platform</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #f5f8f7;
+      color: #24332d;
+    }
+
+    .sidebar {
+      width: 230px;
+      height: 100vh;
+      position: fixed;
+      padding: 25px 15px;
+      background: white;
+      border-right: 1px solid #dbe5e0;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      color: #228b55;
+      margin-bottom: 35px;
+    }
+
+    .nav-btn {
+      width: 100%;
+      border: none;
+      background: none;
+      text-align: left;
+      padding: 12px;
+      margin-bottom: 5px;
+      border-radius: 8px;
+      cursor: pointer;
+      color: #55665e;
+      font-size: 15px;
+    }
+
+    .nav-btn:hover,
+    .nav-btn.active {
+      background: #e8f7ee;
+      color: #228b55;
+      font-weight: bold;
+    }
+
+    main {
+      margin-left: 230px;
+      padding: 30px 45px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    h1, h2, h3 {
+      margin-top: 0;
+    }
+
+    .primary-btn {
+      background: #228b55;
+      border: none;
+      border-radius: 7px;
+      padding: 11px 16px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .primary-btn:hover {
+      background: #176b40;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .score-grid,
+    .card-grid,
+    .two-column {
+      display: grid;
+      gap: 16px;
+    }
+
+    .score-grid {
+      grid-template-columns: repeat(5, 1fr);
+      margin: 25px 0;
+    }
+
+    .card-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .two-column {
+      grid-template-columns: 1fr 1fr;
+      margin-top: 18px;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid #dbe5e0;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
+    }
+
+    .score-card {
+      border-top: 4px solid var(--color);
+    }
+
+    .score-card p {
+      color: #718078;
+      margin-bottom: 8px;
+    }
+
+    .score-card b {
+      font-size: 28px;
+      color: var(--color);
+    }
+
+    .green { color: #228b55; }
+    .blue { color: #287fd3; }
+    .purple { color: #8752c7; }
+    .orange { color: #e9782e; }
+
+    .chart {
+      height: 200px;
+      display: flex;
+      align-items: end;
+      gap: 10px;
+      border-bottom: 1px solid #dbe5e0;
+      padding: 15px;
+    }
+
+    .bar {
+      width: 100%;
+      background: #62c986;
+      border-radius: 5px 5px 0 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th {
+      background: #f1f6f3;
+      color: #66766f;
+      text-align: left;
+    }
+
+    th, td {
+      padding: 13px;
+      border-bottom: 1px solid #e4ece8;
+    }
+
+    .status {
+      padding: 4px 8px;
+      border-radius: 5px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .active-status {
+      color: #18733f;
+      background: #e7f8ed;
+    }
+
+    .pending-status {
+      color: #9a7005;
+      background: #fff8df;
+    }
+
+    .open-status {
+      color: #bd4048;
+      background: #fff0f1;
+    }
+
+    .activity-card {
+      border-left: 4px solid #287fd3;
+    }
+
+    .challenge-card {
+      border-left: 4px solid #e9782e;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.3);
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-box {
+      width: 390px;
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #cfdad5;
+      border-radius: 6px;
+      margin: 6px 0 15px;
+    }
+
+    @media (max-width: 950px) {
+      .score-grid,
+      .card-grid,
+      .two-column {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 650px) {
+      .sidebar {
+        width: 65px;
+      }
+
+      .logo,
+      .nav-btn span {
+        display: none;
+      }
+
+      main {
+        margin-left: 65px;
+        padding: 20px;
+      }
+
+      .score-grid,
+      .card-grid,
+      .two-column {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <aside class="sidebar">
+    <div class="logo">EcoSphere</div>
+
+    <button class="nav-btn active" data-page="dashboard">▦ <span>Dashboard</span></button>
+    <button class="nav-btn" data-page="environmental">🌱 <span>Environmental</span></button>
+    <button class="nav-btn" data-page="social">👥 <span>Social</span></button>
+    <button class="nav-btn" data-page="governance">🏛 <span>Governance</span></button>
+    <button class="nav-btn" data-page="gamification">🏆 <span>Gamification</span></button>
+    <button class="nav-btn" data-page="reports">▤ <span>Reports</span></button>
+    <button class="nav-btn" data-page="settings">⚙ <span>Settings</span></button>
+  </aside>
+
+  <main>
+    <header>
+      <div>
+        <p class="green">ESG MANAGEMENT PLATFORM</p>
+        <h1 id="title">Good morning, User</h1>
+      </div>
+
+      <button class="primary-btn" onclick="openSignup()">Create account</button>
+    </header>
+
+    <section id="dashboard" class="page active">
+      <div id="scoreCards" class="score-grid"></div>
+
+      <div class="two-column">
+        <div class="card">
+          <p class="green">CARBON PERFORMANCE</p>
+          <h3>Emissions trend</h3>
+          <div id="emissionChart" class="chart"></div>
+        </div>
+
+        <div class="card">
+          <p class="blue">QUICK ACTIONS</p>
+          <h3>Keep moving forward</h3>
+          <button class="primary-btn" onclick="showMessage('Carbon data form opened')">+ Log carbon data</button>
+          <br><br>
+          <button class="primary-btn" onclick="goToPage('gamification')">Start challenge</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="environmental" class="page">
+      <p class="green">ENVIRONMENTAL</p>
+      <h2>Emission tracking and goals</h2>
+
+      <div class="card">
+        <h3>Sustainability goals</h3>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Goal</th>
+              <th>Department</th>
+              <th>Progress</th>
+              <th>Deadline</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="goalsTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="social" class="page">
+      <p class="blue">SOCIAL</p>
+      <h2>CSR and employee engagement</h2>
+
+      <div id="activityCards" class="card-grid"></div>
+    </section>
+
+    <section id="governance" class="page">
+      <p class="purple">GOVERNANCE</p>
+      <h2>Policies, audits and compliance</h2>
+
+      <div class="card">
+        <h3>Audit register</h3>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Audit</th>
+              <th>Department</th>
+              <th>Auditor</th>
+              <th>Findings</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="auditsTable"></tbody>
+        </table>
+      </div>
+
+      <br>
+
+      <div class="card">
+        <h3>Compliance issues</h3>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Issue</th>
+              <th>Severity</th>
+              <th>Owner</th>
+              <th>Due date</th>
+            </tr>
+          </thead>
+          <tbody id="issuesTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="gamification" class="page">
+      <p class="orange">GAMIFICATION</p>
+      <h2>Challenges and leaderboard</h2>
+
+      <div id="challengeCards" class="card-grid"></div>
+    </section>
+
+    <section id="reports" class="page">
+      <p class="green">REPORTS</p>
+      <h2>Generate ESG reports</h2>
+
+      <div class="card-grid">
+        <div class="card"><h3>Environmental Report</h3><p>Emissions and sustainability goals.</p><button class="primary-btn">Generate</button></div>
+        <div class="card"><h3>Social Report</h3><p>CSR participation and engagement.</p><button class="primary-btn">Generate</button></div>
+        <div class="card"><h3>Governance Report</h3><p>Audits and compliance issues.</p><button class="primary-btn">Generate</button></div>
+        <div class="card"><h3>ESG Summary</h3><p>Executive overview of all scores.</p><button class="primary-btn">Generate</button></div>
+      </div>
+    </section>
+
+    <section id="settings" class="page">
+      <p class="green">SETTINGS</p>
+      <h2>Configuration and administration</h2>
+
+      <div class="card">
+        <h3>Automation settings</h3>
+        <p><input type="checkbox" checked> Enable automatic emission calculation</p>
+        <p><input type="checkbox" checked> Require CSR evidence</p>
+        <p><input type="checkbox" checked> Auto-award badges</p>
+        <p><input type="checkbox"> Email alerts for compliance issues</p>
+      </div>
+    </section>
+  </main>
+
+  <div id="signupModal" class="modal">
+    <div class="modal-box">
+      <h2>Create account</h2>
+
+      <form id="signupForm">
+        <label>Full name</label>
+        <input name="fullName" required placeholder="Alex Kumar">
+
+        <label>Email</label>
+        <input name="email" type="email" required placeholder="alex@company.com">
+
+        <label>Password</label>
+        <input name="password" type="password" required minlength="6">
+
+        <label>Department</label>
+        <select name="department" required>
+          <option value="">Select department</option>
+          <option>Manufacturing</option>
+          <option>Logistics</option>
+          <option>Corporate</option>
+          <option>Sales</option>
+          <option>R&D</option>
+        </select>
+
+        <button class="primary-btn" type="submit">Sign up</button>
+        <button class="nav-btn" type="button" onclick="closeSignup()">Cancel</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+        function updateGreeting(name) {
+    document.getElementById("title").textContent = `Good morning, ${name}`;
+    }
+
+    const savedUserName = localStorage.getItem("ecosphereUserName");
+
+    if (savedUserName) {
+    updateGreeting(savedUserName);
+    }
+    let appData = {};
+
+    async function loadData() {
+      const response = await fetch("/api/data");
+      appData = await response.json();
+
+      renderDashboard();
+      renderGoals();
+      renderActivities();
+      renderAudits();
+      renderIssues();
+      renderChallenges();
+    }
+
+    function renderDashboard() {
+      const scores = [
+        ["Environmental", 82, "#238b55"],
+        ["Social", 74, "#287fd3"],
+        ["Governance", 78, "#8752c7"],
+        ["Gamification", 85, "#e9782e"],
+        ["Overall ESG", 81, "#238b55"]
+      ];
+
+      document.getElementById("scoreCards").innerHTML = scores.map(score => `
+        <div class="card score-card" style="--color:${score[2]}">
+          <p>${score[0]} Score</p>
+          <b>${score[1]} / 100</b>
+        </div>
+      `).join("");
+
+      const values = [38, 61, 82, 88, 76, 62, 48, 51, 67, 79, 71];
+
+      document.getElementById("emissionChart").innerHTML = values.map(value => `
+        <div class="bar" style="height:${value * 1.7}px"></div>
+      `).join("");
+    }
+
+    function renderGoals() {
+      document.getElementById("goalsTable").innerHTML = appData.goals.map(goal => `
+        <tr>
+          <td>${goal.title}</td>
+          <td>${goal.department}</td>
+          <td>${goal.progress}%</td>
+          <td>${goal.deadline}</td>
+          <td><span class="status active-status">${goal.status}</span></td>
+        </tr>
+      `).join("");
+    }
+
+    function renderActivities() {
+      document.getElementById("activityCards").innerHTML = appData.activities.map(activity => `
+        <div class="card activity-card">
+          <h3>${activity.title}</h3>
+          <p>${activity.joined} employees joined</p>
+          <p>${activity.evidence ? "Evidence required" : "Open activity"}</p>
+          <button class="primary-btn" onclick="showMessage('You joined ${activity.title}')">Join</button>
+        </div>
+      `).join("");
+    }
+
+    function renderAudits() {
+      document.getElementById("auditsTable").innerHTML = appData.audits.map(audit => `
+        <tr>
+          <td>${audit.title}</td>
+          <td>${audit.department}</td>
+          <td>${audit.auditor}</td>
+          <td>${audit.findings}</td>
+          <td><span class="status active-status">${audit.status}</span></td>
+        </tr>
+      `).join("");
+    }
+
+    function renderIssues() {
+      document.getElementById("issuesTable").innerHTML = appData.issues.map(issue => `
+        <tr>
+          <td>${issue.title}</td>
+          <td><span class="status open-status">${issue.severity}</span></td>
+          <td>${issue.owner}</td>
+          <td>${issue.dueDate}</td>
+        </tr>
+      `).join("");
+    }
+
+    function renderChallenges() {
+      document.getElementById("challengeCards").innerHTML = appData.challenges.map(challenge => `
+        <div class="card challenge-card">
+          <h3>${challenge.title}</h3>
+          <p>${challenge.xp} XP · ${challenge.difficulty}</p>
+          <p>Deadline: ${challenge.deadline}</p>
+          <button class="primary-btn" onclick="showMessage('You joined ${challenge.title}')">Join challenge</button>
+        </div>
+      `).join("");
+    }
+
+    document.querySelectorAll(".nav-btn[data-page]").forEach(button => {
+      button.addEventListener("click", () => goToPage(button.dataset.page));
+    });
+
+    function goToPage(pageName) {
+      document.querySelectorAll(".page").forEach(page => page.classList.remove("active"));
+      document.querySelectorAll(".nav-btn").forEach(button => button.classList.remove("active"));
+
+      document.getElementById(pageName).classList.add("active");
+      document.querySelector(`[data-page="${pageName}"]`).classList.add("active");
+    }
+
+    function openSignup() {
+      document.getElementById("signupModal").classList.add("show");
+    }
+
+    function closeSignup() {
+      document.getElementById("signupModal").classList.remove("show");
+    }
+
+    function showMessage(message) {
+      alert(message);
+    }
+
+    document.getElementById("signupForm").addEventListener("submit", async event => {
+      event.preventDefault();
+
+      const formData = Object.fromEntries(new FormData(event.target));
+
+      const response = await fetch("/api/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData)
+      });
+
+      const result = await response.json();
+      alert(result.message);
+
+      if (response.ok) {
+        localStorage.setItem("ecosphereUserName", formData.fullName);
+        updateGreeting(formData.fullName);
+        event.target.reset();
+        closeSignup();
+      }
+    });
+
+    loadData();
+  </script>
+</body>
+</html>
