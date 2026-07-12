@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -599,6 +599,808 @@
     } else {
     alert(result.message);
     }
+    });
+
+    loadData();
+  </script>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EcoSphere ESG Platform</title>
+
+  <style>
+    :root {
+      --bg-dark: #0d0e12;
+      --card-bg: #11141b;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --text-main: #f8fafc;
+      --text-sec: #94a3b8;
+      
+      --color-env: #2ecc71;
+      --color-soc: #3498db;
+      --color-gov: #9b59b6;
+      --color-gam: #f1c40f;
+      --color-esg: #2980b9;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg-dark);
+      color: var(--text-main);
+    }
+
+    /* Horizontal Navbar implementation matching the mock image */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #151a24;
+      border-bottom: 1px solid var(--border-color);
+      padding: 0 30px;
+      height: 60px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: bold;
+      color: var(--color-env);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 15px;
+      height: 100%;
+    }
+
+    .nav-btn {
+      border: none;
+      background: none;
+      color: var(--text-sec);
+      font-size: 14px;
+      padding: 0 15px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-bottom: 3px solid transparent;
+      height: 60px;
+      transition: all 0.2s ease;
+    }
+
+    .nav-btn:hover,
+    .nav-btn.active {
+      color: var(--text-main);
+      border-bottom-color: var(--color-env);
+    }
+
+    main {
+      padding: 30px 45px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+    }
+
+    h1, h2, h3 {
+      margin-top: 0;
+      font-weight: 600;
+    }
+
+    .primary-btn {
+      background: var(--color-env);
+      border: none;
+      border-radius: 6px;
+      padding: 10px 18px;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.2s;
+    }
+
+    .primary-btn:hover {
+      background: #27ae60;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    /* Score cards grid styling */
+    .score-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+      margin-bottom: 25px;
+    }
+
+    .score-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 18px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      transition: border-color 0.3s;
+    }
+
+    .score-card p {
+      color: var(--text-sec);
+      margin: 0 0 10px 0;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .score-card b {
+      font-size: 26px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 22px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    /* Structured Layout for features & insights matching screenshot */
+    .dashboard-layout {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 20px;
+    }
+
+    .dashboard-col {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 15px;
+      letter-spacing: 0.5px;
+    }
+
+    /* Custom SVG emissions graph container */
+    .chart-container {
+      height: 180px;
+      position: relative;
+      margin-top: 15px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th {
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text-sec);
+      text-align: left;
+    }
+
+    th, td {
+      padding: 13px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 14px;
+    }
+
+    .status {
+      padding: 4px 8px;
+      border-radius: 5px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .active-status {
+      color: #2ecc71;
+      background: rgba(46, 204, 113, 0.15);
+    }
+
+    .open-status {
+      color: #e74c3c;
+      background: rgba(231, 76, 60, 0.15);
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(5px);
+      z-index: 1000;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-box {
+      width: 400px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      padding: 30px;
+      border-radius: 12px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      background: #1a1e27;
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      border-radius: 6px;
+      margin: 6px 0 18px;
+    }
+
+    /* Actions styling */
+    .btn-action-green {
+      background: #27ae60;
+      color: white;
+      font-weight: bold;
+      border: none;
+      padding: 12px;
+      border-radius: 6px;
+      width: 100%;
+      margin-bottom: 10px;
+      cursor: pointer;
+      text-align: left;
+    }
+    .btn-action-orange {
+      background: #d35400;
+      color: white;
+      font-weight: bold;
+      border: none;
+      padding: 12px;
+      border-radius: 6px;
+      width: 100%;
+      margin-bottom: 10px;
+      cursor: pointer;
+      text-align: left;
+    }
+    .btn-action-grey {
+      background: #7f8c8d;
+      color: white;
+      font-weight: bold;
+      border: none;
+      padding: 12px;
+      border-radius: 6px;
+      width: 100%;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    @media (max-width: 950px) {
+      .dashboard-layout {
+        grid-template-columns: 1fr;
+      }
+      .score-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 650px) {
+      .score-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Upgraded Top Navigation Bar (matching mock layout) -->
+  <nav class="navbar">
+    <div class="nav-left">
+      <div class="logo">EcoSphere</div>
+      <div class="nav-links">
+        <button class="nav-btn active" data-page="dashboard">Dashboard</button>
+        <button class="nav-btn" data-page="environmental">Environmental</button>
+        <button class="nav-btn" data-page="social">Social</button>
+        <button class="nav-btn" data-page="governance">Governance</button>
+        <button class="nav-btn" data-page="gamification">Gamification</button>
+        <button class="nav-btn" data-page="reports">Reports</button>
+        <button class="nav-btn" data-page="settings">Settings</button>
+      </div>
+    </div>
+    <button class="primary-btn" onclick="openSignup()">Create account</button>
+  </nav>
+
+  <main>
+    <header>
+      <div>
+        <p style="color: var(--color-env); margin: 0; font-size: 12px; font-weight: bold; letter-spacing: 1px;">ESG MANAGEMENT PLATFORM</p>
+        <h1 id="title" style="margin-top: 5px;">Good morning, User</h1>
+      </div>
+    </header>
+
+    <!-- Dashboard Main View -->
+    <section id="dashboard" class="page active">
+      <div id="scoreCards" class="score-grid"></div>
+
+      <div class="dashboard-layout">
+        <!-- Left Dashboard Column -->
+        <div class="dashboard-col">
+          <!-- Emissions Trend Line Graph -->
+          <div class="card">
+            <span class="card-title" style="color: var(--color-env);">✔ Emissions Trend (12 mo)</span>
+            <div id="emissionChart" class="chart-container"></div>
+          </div>
+
+          <!-- Dynamic Recent Activity System -->
+          <div class="card">
+            <span class="card-title" style="color: var(--color-soc);">🕑 Recent Activity</span>
+            <div id="recentActivitiesList" style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;"></div>
+          </div>
+        </div>
+
+        <!-- Right Dashboard Column -->
+        <div class="dashboard-col">
+          <!-- Department ESG Ranking Bar Graph -->
+          <div class="card">
+            <span class="card-title" style="color: var(--color-soc);">📊 Department ESG Ranking</span>
+            <div id="departmentRanking" style="margin-top: 15px;"></div>
+          </div>
+
+          <!-- Modernized Quick Actions -->
+          <div class="card">
+            <span class="card-title" style="color: var(--color-gam);">⚡ Quick Actions</span>
+            <div style="margin-top: 15px; display: flex; flex-direction: column;">
+              <button class="btn-action-green" onclick="showMessage('Carbon data form opened')">⚡ Log Carbon Data</button>
+              <button class="btn-action-orange" onclick="goToPage('gamification')">▲ Start Challenge</button>
+              <button class="btn-action-grey" onclick="goToPage('reports')">📊 View Reports</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Environmental View -->
+    <section id="environmental" class="page">
+      <p style="color: var(--color-env); font-weight: bold;">ENVIRONMENTAL</p>
+      <h2>Emission tracking and goals</h2>
+
+      <div class="card">
+        <h3>Sustainability goals</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Goal</th>
+              <th>Department</th>
+              <th>Progress</th>
+              <th>Deadline</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="goalsTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Social View -->
+    <section id="social" class="page">
+      <p style="color: var(--color-soc); font-weight: bold;">SOCIAL</p>
+      <h2>CSR and employee engagement</h2>
+      <div id="activityCards" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;"></div>
+    </section>
+
+    <!-- Governance View -->
+    <section id="governance" class="page">
+      <p style="color: var(--color-gov); font-weight: bold;">GOVERNANCE</p>
+      <h2>Policies, audits and compliance</h2>
+
+      <div class="card">
+        <h3>Audit register</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Audit</th>
+              <th>Department</th>
+              <th>Auditor</th>
+              <th>Findings</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="auditsTable"></tbody>
+        </table>
+      </div>
+
+      <br>
+
+      <div class="card">
+        <h3>Compliance issues</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Issue</th>
+              <th>Severity</th>
+              <th>Owner</th>
+              <th>Due date</th>
+            </tr>
+          </thead>
+          <tbody id="issuesTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Gamification View -->
+    <section id="gamification" class="page">
+      <p style="color: var(--color-gam); font-weight: bold;">GAMIFICATION</p>
+      <h2>Challenges and leaderboard</h2>
+      <div id="challengeCards" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;"></div>
+    </section>
+
+    <!-- Reports View -->
+    <section id="reports" class="page">
+      <p style="color: var(--color-env); font-weight: bold;">REPORTS</p>
+      <h2>Generate ESG reports</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px;">
+        <div class="card"><h3>Environmental Report</h3><p style="color: var(--text-sec);">Emissions and goals.</p><button class="primary-btn">Generate</button></div>
+        <div class="card"><h3>Social Report</h3><p style="color: var(--text-sec);">CSR and engagement.</p><button class="primary-btn">Generate</button></div>
+        <div class="card"><h3>Governance Report</h3><p style="color: var(--text-sec);">Audits and compliance.</p><button class="primary-btn">Generate</button></div>
+        <div class="card"><h3>ESG Summary</h3><p style="color: var(--text-sec);">Executive score overview.</p><button class="primary-btn">Generate</button></div>
+      </div>
+    </section>
+
+    <!-- Settings View -->
+    <section id="settings" class="page">
+      <p style="color: var(--color-env); font-weight: bold;">SETTINGS</p>
+      <h2>Configuration and administration</h2>
+      <div class="card">
+        <h3>Automation settings</h3>
+        <p><input type="checkbox" checked style="width: auto; margin-right: 10px;"> Enable automatic emission calculation</p>
+        <p><input type="checkbox" checked style="width: auto; margin-right: 10px;"> Require CSR evidence</p>
+        <p><input type="checkbox" checked style="width: auto; margin-right: 10px;"> Auto-award badges</p>
+        <p><input type="checkbox" style="width: auto; margin-right: 10px;"> Email alerts for compliance issues</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Sign Up and OTP Modal (Resolved forms structure) -->
+  <div id="signupModal" class="modal">
+    <div class="modal-box">
+      <h2>Create account</h2>
+      <form id="signupForm">
+        <label>Full name</label>
+        <input name="fullName" required placeholder="Alex Kumar">
+
+        <label>Email</label>
+        <input name="email" type="email" required placeholder="alex@company.com">
+
+        <label>Password</label>
+        <input name="password" type="password" required minlength="6">
+
+        <label>Department</label>
+        <select name="department" required>
+          <option value="">Select department</option>
+          <option>Manufacturing</option>
+          <option>Logistics</option>
+          <option>Corporate</option>
+          <option>Sales</option>
+          <option>R&D</option>
+        </select>
+
+        <button class="primary-btn" style="width: 100%; margin-bottom: 10px;" type="submit">Sign up</button>
+        <button class="nav-btn" style="width: 100%; border-bottom: none; height: auto;" type="button" onclick="closeSignup()">Cancel</button>
+      </form>
+
+      <form id="otpForm" style="display: none;">
+        <h3>Verify your email</h3>
+        <input id="otpInput" type="text" maxlength="6" placeholder="Enter 6-digit OTP" required>
+        <button class="primary-btn" style="width: 100%;" type="submit">Verify OTP</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let appData = {};
+    let currentEmail = ""; // Globally stored to complete verification cycle safely
+
+    function updateGreeting(name) {
+      document.getElementById("title").textContent = `Good morning, ${name}`;
+    }
+
+    const savedUserName = localStorage.getItem("ecosphereUserName");
+    if (savedUserName) {
+      updateGreeting(savedUserName);
+    }
+
+    async function loadData() {
+      const response = await fetch("/api/data");
+      appData = await response.json();
+
+      renderDashboard();
+      renderGoals();
+      renderActivities();
+      renderAudits();
+      renderIssues();
+      renderChallenges();
+    }
+
+    function renderDashboard() {
+      // Scores mapping to custom dark visual highlights
+      const scores = [
+        ["Environmental", 82, "var(--color-env)"],
+        ["Social", 74, "var(--color-soc)"],
+        ["Governance", 78, "var(--color-gov)"],
+        ["Gamification", 85, "var(--color-gam)"],
+        ["Overall ESG", 81, "var(--color-esg)"]
+      ];
+
+      document.getElementById("scoreCards").innerHTML = scores.map(score => `
+        <div class="score-card" style="border-top: 4px solid ${score[2]}">
+          <p>${score[0]} Score</p>
+          <b style="color: ${score[2]}">${score[1]} / 100</b>
+        </div>
+      `).join("");
+
+      // Render Charts & Interactive Components
+      generateEmissionChart();
+      generateDepartmentRanking();
+      renderRecentActivities();
+    }
+
+    // High-Fidelity Interactive SVG Line Graph Generator (Custom Dark Mode Aesthetics)
+    function generateEmissionChart() {
+      const emissionsData = [38, 60, 80, 85, 85, 75, 60, 50, 52, 68, 78, 72];
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const width = 600;
+      const height = 180;
+      const paddingX = 40;
+      const paddingY = 25;
+
+      const chartWidth = width - (paddingX * 2);
+      const chartHeight = height - (paddingY * 2);
+
+      const points = emissionsData.map((val, i) => {
+        const x = paddingX + (i * (chartWidth / (emissionsData.length - 1)));
+        const y = height - paddingY - (val / 100 * chartHeight);
+        return { x, y, val, month: months[i] };
+      });
+
+      // Construct Smooth SVG Path Line
+      let d = `M ${points[0].x} ${points[0].y}`;
+      for (let i = 1; i < points.length; i++) {
+        d += ` L ${points[i].x} ${points[i].y}`;
+      }
+
+      const circles = points.map(p => `
+        <circle cx="${p.x}" cy="${p.y}" r="4" fill="var(--color-env)" stroke="#fff" stroke-width="1.5" />
+      `).join("");
+
+      const labels = points.map(p => `
+        <text x="${p.x}" y="${height - 5}" fill="var(--text-sec)" font-size="10" text-anchor="middle">${p.month}</text>
+      `).join("");
+
+      const gridLines = [0, 25, 50, 75, 100].map(val => {
+        const y = height - paddingY - (val / 100 * chartHeight);
+        return `
+          <line x1="${paddingX}" y1="${y}" x2="${width - paddingX}" y2="${y}" stroke="rgba(255,255,255,0.06)" stroke-dasharray="4,4"/>
+          <text x="${paddingX - 8}" y="${y + 3}" fill="var(--text-sec)" font-size="9" text-anchor="end">${val}</text>
+        `;
+      }).join("");
+
+      const svg = `
+        <svg viewBox="0 0 ${width} ${height}" style="width:100%; height:100%;">
+          ${gridLines}
+          <path d="${d}" fill="none" stroke="var(--color-env)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          ${circles}
+          ${labels}
+        </svg>
+      `;
+
+      document.getElementById("emissionChart").innerHTML = svg;
+    }
+
+    // Dynamic High-Fidelity Department Ranking Bar Graph Generator
+    function generateDepartmentRanking() {
+      const rankings = [
+        { name: "Sales", score: 45 },
+        { name: "Mfg", score: 80 },
+        { name: "Log", score: 65 },
+        { name: "Corp", score: 95 },
+        { name: "R&D", score: 60 }
+      ];
+
+      const barHtml = rankings.map(dept => `
+        <div style="display: flex; flex-direction: column; align-items: center; flex: 1; height: 100%; justify-content: flex-end; gap: 8px;">
+          <div style="width: 38px; height: ${dept.score}%; background: var(--color-esg); border-radius: 4px 4px 0 0; position: relative;">
+            <span style="position: absolute; top: -18px; left: 50%; transform: translateX(-50%); font-size: 10px; font-weight: bold; color: var(--text-main);">${dept.score}</span>
+          </div>
+          <span style="font-size: 12px; color: var(--text-sec);">${dept.name}</span>
+        </div>
+      `).join("");
+
+      document.getElementById("departmentRanking").innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; height: 160px; width: 100%; padding-top: 20px; border-bottom: 1px solid var(--border-color);">
+          ${barHtml}
+        </div>
+      `;
+    }
+
+    // Dynamic Recent Activities Loader
+    function renderRecentActivities() {
+      const container = document.getElementById("recentActivitiesList");
+      if (!appData.recentActivities) return;
+
+      container.innerHTML = appData.recentActivities.map(activity => {
+        let color = "var(--color-env)";
+        if (activity.type === "warning") color = "#e67e22";
+        if (activity.type === "info") color = "var(--color-soc)";
+        if (activity.type === "policy") color = "var(--color-gov)";
+
+        return `
+          <div style="display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.04);">
+            <div style="width: 26px; height: 26px; border-radius: 50%; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; font-size: 11px; color: ${color};">
+              ${activity.icon}
+            </div>
+            <span style="font-size: 14px; color: #cbd5e1;">${activity.text}</span>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderGoals() {
+      document.getElementById("goalsTable").innerHTML = appData.goals.map(goal => `
+        <tr>
+          <td>${goal.title}</td>
+          <td>${goal.department}</td>
+          <td>${goal.progress}%</td>
+          <td>${goal.deadline}</td>
+          <td><span class="status active-status">${goal.status}</span></td>
+        </tr>
+      `).join("");
+    }
+
+    function renderActivities() {
+      document.getElementById("activityCards").innerHTML = appData.activities.map(activity => `
+        <div class="card" style="border-left: 4px solid var(--color-soc);">
+          <h3>${activity.title}</h3>
+          <p style="color: var(--text-sec);">${activity.joined} employees joined</p>
+          <p style="font-size: 13px; color: var(--text-sec);">${activity.evidence ? "Evidence required" : "Open activity"}</p>
+          <button class="primary-btn" style="width:100%; margin-top: 10px;" onclick="showMessage('You joined ${activity.title}')">Join</button>
+        </div>
+      `).join("");
+    }
+
+    function renderAudits() {
+      document.getElementById("auditsTable").innerHTML = appData.audits.map(audit => `
+        <tr>
+          <td>${audit.title}</td>
+          <td>${audit.department}</td>
+          <td>${audit.auditor}</td>
+          <td>${audit.findings}</td>
+          <td><span class="status active-status">${audit.status}</span></td>
+        </tr>
+      `).join("");
+    }
+
+    function renderIssues() {
+      document.getElementById("issuesTable").innerHTML = appData.issues.map(issue => `
+        <tr>
+          <td>${issue.title}</td>
+          <td><span class="status open-status">${issue.severity}</span></td>
+          <td>${issue.owner}</td>
+          <td>${issue.dueDate}</td>
+        </tr>
+      `).join("");
+    }
+
+    function renderChallenges() {
+      document.getElementById("challengeCards").innerHTML = appData.challenges.map(challenge => `
+        <div class="card" style="border-left: 4px solid var(--color-gam);">
+          <h3>${challenge.title}</h3>
+          <p style="color: var(--text-sec);">${challenge.xp} XP · ${challenge.difficulty}</p>
+          <p style="font-size: 13px; color: var(--text-sec);">Deadline: ${challenge.deadline}</p>
+          <button class="primary-btn" style="width:100%; margin-top: 10px;" onclick="showMessage('You joined ${challenge.title}')">Join challenge</button>
+        </div>
+      `).join("");
+    }
+
+    // Horizontal Nav Event Listeners
+    document.querySelectorAll(".nav-btn[data-page]").forEach(button => {
+      button.addEventListener("click", () => goToPage(button.dataset.page));
+    });
+
+    function goToPage(pageName) {
+      document.querySelectorAll(".page").forEach(page => page.classList.remove("active"));
+      document.querySelectorAll(".nav-btn").forEach(button => button.classList.remove("active"));
+
+      document.getElementById(pageName).classList.add("active");
+      document.querySelector(`[data-page="${pageName}"]`).classList.add("active");
+    }
+
+    function openSignup() {
+      document.getElementById("signupModal").classList.add("show");
+    }
+
+    function closeSignup() {
+      document.getElementById("signupModal").classList.remove("remove");
+      document.getElementById("signupModal").className = "modal";
+    }
+
+    function showMessage(message) {
+      alert(message);
+    }
+
+    // Submit user details flow
+    document.getElementById("signupForm").addEventListener("submit", async event => {
+      event.preventDefault();
+      const formData = Object.fromEntries(new FormData(event.target));
+      currentEmail = formData.email; // Capture for global verify scope reference
+
+      const response = await fetch("/api/send-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData)
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        document.getElementById("signupForm").style.display = "none";
+        document.getElementById("otpForm").style.display = "block";
+      } else {
+        alert(result.message);
+      }
+    });
+
+    // RESOLVED OTP verification listener (was completely missing!)
+    document.getElementById("otpForm").addEventListener("submit", async event => {
+      event.preventDefault();
+      const otpVal = document.getElementById("otpInput").value;
+
+      const response = await fetch("/api/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: currentEmail, otp: otpVal })
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        alert(result.message);
+        localStorage.setItem("ecosphereUserName", result.fullName);
+        updateGreeting(result.fullName);
+        closeSignup();
+        
+        // Reset states
+        document.getElementById("signupForm").reset();
+        document.getElementById("otpForm").reset();
+        document.getElementById("signupForm").style.display = "block";
+        document.getElementById("otpForm").style.display = "none";
+      } else {
+        alert(result.message);
+      }
     });
 
     loadData();
