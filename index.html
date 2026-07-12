@@ -485,10 +485,10 @@
       <h2>Generate ESG reports</h2>
 
       <div class="card-grid">
-        <div class="card"><h3>Environmental Report</h3><p>Emissions and sustainability goals.</p><button class="primary-btn">Generate</button></div>
-        <div class="card"><h3>Social Report</h3><p>CSR participation and engagement.</p><button class="primary-btn">Generate</button></div>
-        <div class="card"><h3>Governance Report</h3><p>Audits and compliance issues.</p><button class="primary-btn">Generate</button></div>
-        <div class="card"><h3>ESG Summary</h3><p>Executive overview of all scores.</p><button class="primary-btn">Generate</button></div>
+        <div class="card"><h3>Environmental Report</h3><p>Emissions and sustainability goals.</p><button class="primary-btn" onclick="generateReport('Environmental Report')"> Generate </button></div>
+        <div class="card"><h3>Social Report</h3><p>CSR participation and engagement.</p><button class="primary-btn" onclick="generateReport('Social Report')"> Generate </button></div>
+        <div class="card"><h3>Governance Report</h3><p>Audits and compliance issues.</p><button class="primary-btn" onclick="generateReport('Governance Report')"> Generate </button></div>
+        <div class="card"><h3>ESG Summary</h3><p>Executive overview of all scores.</p><button class="primary-btn" onclick="generateReport('ESG Summary Report')"> Generate </button></div>
       </div>
     </section>
 
@@ -818,6 +818,73 @@
             <small>${activity.time}</small>
         </div>
         `).join("");
+    }
+        async function generateReport(reportName) {
+    const response = await fetch("/api/data");
+    const data = await response.json();
+
+    const userName = localStorage.getItem("ecosphereUserName") || "User";
+
+    const reportWindow = window.open("", "_blank");
+
+    reportWindow.document.write(`
+        <html>
+        <head>
+            <title>${reportName}</title>
+            <style>
+            body {
+                font-family: Arial, sans-serif;
+                padding: 40px;
+                color: #24332d;
+            }
+
+            h1 {
+                color: #228b55;
+            }
+
+            .box {
+                border: 1px solid #d7e4dd;
+                border-radius: 10px;
+                padding: 15px;
+                margin: 15px 0;
+            }
+            </style>
+        </head>
+
+        <body>
+            <h1>EcoSphere - ${reportName}</h1>
+            <p>Generated for: <b>${userName}</b></p>
+            <p>Date: ${new Date().toLocaleDateString()}</p>
+
+            <div class="box">
+            <h3>Environmental Goals</h3>
+            ${data.goals.map(goal => `
+                <p>
+                ${goal.title} - ${goal.progress}% complete
+                </p>
+            `).join("")}
+            </div>
+
+            <div class="box">
+            <h3>CSR Activities</h3>
+            ${data.activities.map(activity => `
+                <p>${activity.title} - ${activity.joined} employees joined</p>
+            `).join("")}
+            </div>
+
+            <div class="box">
+            <h3>Gamification Challenges</h3>
+            ${data.challenges.map(challenge => `
+                <p>${challenge.title} - ${challenge.xp} XP</p>
+            `).join("")}
+            </div>
+
+            <button onclick="window.print()">Print / Save as PDF</button>
+        </body>
+        </html>
+    `);
+
+    reportWindow.document.close();
     }
   </script>
 </body>
