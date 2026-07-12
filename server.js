@@ -1,6 +1,33 @@
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
+const nodemailer = require("nodemailer");
+
+const otpStore = {};
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_APP_PASSWORD
+  }
+});
+
+function getBody(request) {
+  return new Promise((resolve, reject) => {
+    let body = "";
+
+    request.on("data", chunk => body += chunk);
+
+    request.on("end", () => {
+      try {
+        resolve(JSON.parse(body));
+      } catch {
+        reject(new Error("Invalid request"));
+      }
+    });
+  });
+}
 
 const port = 3000;
 const databaseFile = path.join(__dirname, "data.json");
@@ -34,56 +61,103 @@ const server = http.createServer((request, response) => {
     return;
   }
 
-  if (request.method === "POST" && request.url === "/api/signup") {
-    let body = "";
+  if (request.method === "POST" && request.url === "/api/send-otp") {
+  getBody(request).then(async user => {
+    if (!user.fullName || !user.email || !user.password || !user.department) {
+      return sendJson(response, 400, {
+        message: "Please complete all fields."
+      });
+    }
 
-    request.on("data", chunk => {
-      body += chunk;
+    const database = readDatabase();
+
+    const userExists = database.users.some(item => item.email === user.email);
+
+    if (userExists) {
+      return sendJson(response, 409, {
+        message: "This email already has an account."
+      });
+    }
+
+    const otp = String(Math.floor(100000 + Math.random() * 900000));
+
+    otpStore[user.email] = {
+      otp: otp,
+      user: user,
+      expiry: Date.now() + 10 * 60 * 1000
+    };
+
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: user.email,
+      subject: "EcoSphere Email Verification",
+      text: `Your EcoSphere OTP is ${otp}. It expires in 10 minutes.`
     });
 
-    request.on("end", () => {
-      const user = JSON.parse(body);
+    sendJson(response, 200, {
+      message: "OTP sent to your email."
+    });
+  }).catch(() => {
+    sendJson(response, 400, {
+      message: "Invalid data."
+    });
+  });
 
-      if (!user.fullName || !user.email || !user.password || !user.department) {
-        sendJson(response, 400, {
-          message: "Please fill all fields."
-        });
-        return;
-      }
+  return;
+}
 
-      const database = readDatabase();
+if (request.method === "POST" && request.url === "/api/verify-otp") {
+  getBody(request).then(data => {
+    const savedOtp = otpStore[data.email];
 
-      const exists = database.users.some(existingUser => {
-        return existingUser.email === user.email;
+    if (!savedOtp) {
+      return sendJson(response, 400, {
+        message: "Please request an OTP first."
       });
+    }
 
-      if (exists) {
-        sendJson(response, 409, {
-          message: "This email is already registered."
-        });
-        return;
-      }
+    if (Date.now() > savedOtp.expiry) {
+      delete otpStore[data.email];
 
-      database.users.push({
-        id: Date.now(),
-        fullName: user.fullName,
-        email: user.email,
-        password: user.password,
-        department: user.department,
-        role: "Employee",
-        xp: 0
+      return sendJson(response, 400, {
+        message: "OTP has expired. Please request a new one."
       });
+    }
 
-      saveDatabase(database);
-
-      sendJson(response, 201, {
-        message: "Account created successfully."
+    if (savedOtp.otp !== data.otp) {
+      return sendJson(response, 400, {
+        message: "Incorrect OTP."
       });
+    }
+
+    const database = readDatabase();
+
+    database.users.push({
+      id: Date.now(),
+      fullName: savedOtp.user.fullName,
+      email: savedOtp.user.email,
+      password: savedOtp.user.password,
+      department: savedOtp.user.department,
+      role: "Employee",
+      xp: 0,
+      verified: true
     });
 
-    return;
-  }
+    saveDatabase(database);
+    delete otpStore[data.email];
 
+    sendJson(response, 201, {
+      message: "Email verified. Account created successfully.",
+      fullName: savedOtp.user.fullName
+    });
+  }).catch(() => {
+    sendJson(response, 400, {
+      message: "Invalid data."
+    });
+  });
+
+  return;
+}
   sendJson(response, 404, {
     message: "Page not found"
   });

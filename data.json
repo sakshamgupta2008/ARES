@@ -17,6 +17,24 @@
       "department": "Sales",
       "role": "Employee",
       "xp": 0
+    },
+    {
+      "id": 1783836847607,
+      "fullName": "Mr. Billu",
+      "email": "rehan260806@gmail.com",
+      "password": "hehehe",
+      "department": "Sales",
+      "role": "Employee",
+      "xp": 0
+    },
+    {
+      "id": 1783837308815,
+      "fullName": "hehehe",
+      "email": "sudhasingh79053@gmail.com",
+      "password": "vgfygyugugg",
+      "department": "Logistics",
+      "role": "Employee",
+      "xp": 0
     }
   ],
   "goals": [
