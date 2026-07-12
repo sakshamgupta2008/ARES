@@ -585,21 +585,20 @@
 
       const formData = Object.fromEntries(new FormData(event.target));
 
-      const response = await fetch("/api/signup", {
+      const response = await fetch("/api/send-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData)
       });
 
-      const result = await response.json();
-      alert(result.message);
+        const result = await response.json();
 
-      if (response.ok) {
-        localStorage.setItem("ecosphereUserName", formData.fullName);
-        updateGreeting(formData.fullName);
-        event.target.reset();
-        closeSignup();
-      }
+    if (response.ok) {
+    document.getElementById("signupForm").style.display = "none";
+    document.getElementById("otpForm").style.display = "block";
+    } else {
+    alert(result.message);
+    }
     });
 
     loadData();

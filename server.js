@@ -12,6 +12,13 @@ const transporter = nodemailer.createTransport({
     pass: process.env.EMAIL_APP_PASSWORD
   }
 });
+transporter.verify()
+  .then(() => {
+    console.log("Gmail connection successful.");
+  })
+  .catch(error => {
+    console.log("Gmail connection failed:", error.message);
+  });
 
 function getBody(request) {
   return new Promise((resolve, reject) => {
